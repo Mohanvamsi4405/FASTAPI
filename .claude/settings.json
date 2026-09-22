@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"d:\\\\FASTAPI\" -Recurse -Filter \"*.py\")",
+      "Bash(Select-Object -ExpandProperty FullName)"
+    ]
+  }
+}

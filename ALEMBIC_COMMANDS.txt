@@ -1,0 +1,90 @@
+ALEMBIC COMMANDS CHEAT SHEET
+=============================
+
+Run these from D:\FASTAPI with the fastapi_env virtualenv active.
+
+SETUP
+-----
+alembic init alembic
+    Create the alembic folder + alembic.ini (already done in this project).
+
+CREATING MIGRATIONS
+--------------------
+alembic revision -m "message"
+    Create a blank migration file; you write upgrade()/downgrade() by hand.
+
+alembic revision --autogenerate -m "message"
+    Compare models.py against the current DB schema and generate the
+    migration automatically. Always review the generated file before
+    running it.
+
+APPLYING MIGRATIONS
+--------------------
+alembic upgrade head
+    Apply all migrations up to the latest.
+
+alembic upgrade +1
+    Apply the next one migration from the current position.
+
+alembic upgrade <revision_id>
+    Upgrade to a specific revision.
+
+REVERTING MIGRATIONS
+---------------------
+alembic downgrade -1
+    Undo the last applied migration (one step back).
+
+alembic downgrade base
+    Undo everything, back to an empty schema.
+
+alembic downgrade <revision_id>
+    Downgrade to a specific revision.
+
+Note: +1/-1 are directional -- upgrade moves forward so it takes +1,
+downgrade moves backward so it takes -1. "alembic downgrade +1" will
+always fail with "didn't produce 1 migrations".
+
+INSPECTING STATE
+-----------------
+alembic current
+    Show the revision currently stamped in the DB.
+
+alembic history
+    List all migrations in order, oldest to newest.
+
+alembic history --verbose
+    Same, with full details per revision.
+
+alembic heads
+    Show the latest revision(s) (more than one means diverged branches).
+
+alembic show <revision_id>
+    Show details of one migration file.
+
+FIXING / ADVANCED
+------------------
+alembic stamp head
+    Mark the DB as being at head WITHOUT running any SQL. Useful when
+    the schema already matches but alembic's version table is out of
+    sync.
+
+alembic stamp <revision_id>
+    Mark the DB at an arbitrary revision without running migrations.
+
+alembic merge -m "message" <rev1> <rev2>
+    Create a merge migration when you have two divergent heads.
+
+alembic edit <revision_id>
+    Open a migration file in your editor.
+
+THIS PROJECT'S MIGRATION CHAIN (oldest -> newest)
+---------------------------------------------------
+0b389de427b9  create_post_table
+ceb58b493c56  add_a_column_called_content
+da29447daacc  create_users_table
+b071e42dd0a3  create_foreign_key_in_users_table
+9cc597ea66e6  add_few_other_columns (published, created_at on posts)
+
+app/models.py also defines a Votes table (user_id, post_id) that has
+no migration yet -- you'll need one more (or --autogenerate) before
+votes-related code will work against the DB.

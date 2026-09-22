@@ -1,0 +1,11 @@
+
+py -3.10 -m venv fastapi_env
+
+fastapi_env\Scripts\activate
+
+
+python -m pip install --upgrade pip
+
+deactivate
+
+
